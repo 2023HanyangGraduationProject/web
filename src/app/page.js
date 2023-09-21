@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import styles from './page.module.css'
+import Wallet from './_components/Wallet'
 
 export default function Home() {
   return (
@@ -27,7 +28,6 @@ export default function Home() {
           </a>
         </div>
       </div>
-
       <div className={styles.center}>
         <Image
           className={styles.logo}
@@ -38,6 +38,7 @@ export default function Home() {
           priority
         />
       </div>
+      <Wallet />
 
       <div className={styles.grid}>
         <a
