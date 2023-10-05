@@ -1,6 +1,7 @@
 import Providers from './_providers/Providers'
 import './globals.css'
 import { Inter } from 'next/font/google'
+import NavBar from './_components/NavBar/NavBar'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -12,7 +13,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}><Providers>{children}</Providers></body>
+      <body className={inter.className}><Providers>
+        <div class="flex justify-center pt-4">
+          <NavBar />
+        </div>
+        {children}
+      </Providers></body>
     </html>
   )
 }
