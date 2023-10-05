@@ -38,6 +38,10 @@ export default function Home() {
           priority
         />
       </div>
+      {/* Tailwind CSS 예시 */}
+      {/* <h1 className="text-3xl font-bold underline">
+        Hello world!
+      </h1> */}
       <Wallet />
 
       <div className={styles.grid}>
