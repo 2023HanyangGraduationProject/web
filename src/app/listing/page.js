@@ -15,11 +15,23 @@ export default function Page() {
 
     async function onSubmit(event) {
         event.preventDefault()
-        
-        const formData = new FormData(event.target)
+
+        let formData = new FormData();
+        formData.append("row", event.target.row.value);
+        formData.append("column", event.target.column.value);
+        formData.append("price1", event.target.price1.value);
+        formData.append("price2", event.target.price2.value);
+        formData.append("price3", event.target.price3.value);
+        formData.append("currency1", event.target.currency1.value);
+        formData.append("currency2", event.target.currency2.value);
+        formData.append("currency3", event.target.currency3.value);
+
         const response = await fetch('/api/listing', {
-          method: 'POST',
-          body: formData,
+            // headers: {
+                // 'Content-Type': 'multipart/form-data',
+            // },
+            method: 'POST',
+            body: formData,
         })
      
         // Handle response if necessary
@@ -33,26 +45,35 @@ export default function Page() {
             <div>{address}</div>
             
             <form onSubmit={onSubmit}>
-                가격1: <select name="price1">
-                            <option value="0">ETH(ETHEREUM)</option>
-                            <option value="1">ETH(SEPOLIA)</option>
-                            <option value="2">MATIC(POLYGON)</option>
-                            <option value="3">MATIC(MUMBAI)</option>
-                        </select>
+                <label for="name">가격1: </label>
+                <input type="number" name="price1" required />
+
+                <select name="currency1">
+                    <option value="0">ETH(ETHEREUM)</option>
+                    <option value="1">ETH(SEPOLIA)</option>
+                    <option value="2">MATIC(POLYGON)</option>
+                    <option value="3">MATIC(MUMBAI)</option>
+                </select>
                 <br />
-                가격2: <select name="price2">
-                            <option value="0">ETH(ETHEREUM)</option>
-                            <option value="1">ETH(SEPOLIA)</option>
-                            <option value="2">MATIC(POLYGON)</option>
-                            <option value="3">MATIC(MUMBAI)</option>
-                        </select>
+                <label for="name">가격2: </label>
+                <input type="number" name="price2" required />
+                
+                <select name="currency2">
+                    <option value="0">ETH(ETHEREUM)</option>
+                    <option value="1">ETH(SEPOLIA)</option>
+                    <option value="2">MATIC(POLYGON)</option>
+                    <option value="3">MATIC(MUMBAI)</option>
+                </select>
                 <br />
-                가격3: <select name="price3">
-                            <option value="0">ETH(ETHEREUM)</option>
-                            <option value="1">ETH(SEPOLIA)</option>
-                            <option value="2">MATIC(POLYGON)</option>
-                            <option value="3">MATIC(MUMBAI)</option>
-                        </select>
+                <label for="name">가격3: </label>
+                <input type="number" name="price3" required />
+                
+                <select name="currency3">
+                    <option value="0">ETH(ETHEREUM)</option>
+                    <option value="1">ETH(SEPOLIA)</option>
+                    <option value="2">MATIC(POLYGON)</option>
+                    <option value="3">MATIC(MUMBAI)</option>
+                </select>
                 <br />
                 행: <input type="number" name="row" />
                 <br />
