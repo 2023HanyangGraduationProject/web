@@ -19,14 +19,14 @@ const NavBar = () => {
   ];
 
   return (
-    <div class="container flex flex-row justify-between items-center w-4/5 h-14 bg-red-100"> 
-        <div class="w-10">로고</div>
-        <nav class="px-12 h-14 bg-black flex justify-between items-center rounded-2xl">
+    <div className="container flex flex-row justify-between items-center w-4/5 h-14 bg-red-100"> 
+        <div className="w-10">로고</div>
+        <nav className="px-12 h-14 bg-black flex justify-between items-center rounded-2xl">
             {links.map((link) => (
-                <div key={link.href} class="w-48 m-4">
+                <div key={link.href} className="w-48 m-4">
                 {/* <Link href={link.href}> */}
-                <Link href={link.href} class="text-white text-xl hover:text-gray-300">
-                    {/* <a class="text-white hover:underline">{link.label}</a> */}
+                <Link href={link.href} className="text-white text-xl hover:text-gray-300">
+                    {/* <a className="text-white hover:underline">{link.label}</a> */}
                     {link.label}
                 </Link>
             </div>
