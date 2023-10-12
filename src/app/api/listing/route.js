@@ -9,7 +9,9 @@ import { createProduct } from '../../../lib/product/product.service'
 export async function POST(request) {
   
   const formData = await request.formData();
-  const abc = "abc"
+  // console.log(formData)
+  const address = formData.get('address')
+  const files = formData.getAll('images')
   const row = formData.get('row')
   const column = formData.get('column')
   const price1 = formData.get('price1')
@@ -20,7 +22,7 @@ export async function POST(request) {
   const currency3 = formData.get('currency3')
   
   try {
-    await createProduct({ seller: abc, row: row, col: column, price1: price1, currency1: currency1, price2: price2, currency2: currency2, price3: price3, currency3: currency3 })
+    await createProduct({ seller: address, row: row, col: column, price1: price1, currency1: currency1, price2: price2, currency2: currency2, price3: price3, currency3: currency3 })
   } catch (e) {
     console.error(e.message);
   }

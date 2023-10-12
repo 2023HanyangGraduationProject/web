@@ -1,6 +1,7 @@
 'use client'
 import React from "react";
 import { useAccount } from 'wagmi'
+import Script from 'next/script'
 
 export default function Page() {
     const [hydrated, setHydrated] = React.useState(false);
@@ -17,6 +18,11 @@ export default function Page() {
         event.preventDefault()
 
         let formData = new FormData();
+        formData.append("address", address);
+        let varFiles = event.target.inputFiles.files;
+        for(let i = 0; i < varFiles.length; i++){
+            formData.append("images", varFiles[i]);
+        }
         formData.append("row", event.target.row.value);
         formData.append("column", event.target.column.value);
         formData.append("price1", event.target.price1.value);
@@ -40,11 +46,13 @@ export default function Page() {
     }
 
     return (
-        <div>
+        <>
             <h1>Hello, Listing Page!</h1>
             <div>{address}</div>
             
             <form onSubmit={onSubmit}>
+                <input id="inputFiles" multiple type="file" />
+                <pre class="output">Selected files:</pre>
                 <label for="name">가격1: </label>
                 <input type="number" name="price1" required />
 
@@ -81,7 +89,8 @@ export default function Page() {
                 <br />
                 <button type="submit">등록</button>
             </form>
-        </div>
+            <Script src="/scripts/listing.js" strategy="afterInteractive"/>
+        </>
     )
     
 }
