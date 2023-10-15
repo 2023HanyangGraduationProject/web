@@ -1,18 +1,18 @@
-// SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.16;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IERC5192.sol";
 
-contract Certification is ERC721, ERC721Burnable, ERC721Enumerable, Ownable {
-    constructor() ERC721("Certification", "CERT") {}
+contract Ticket is ERC1155, Ownable, ERC1155Burnable {
+    constructor(address initialOwner) ERC1155("") Ownable(initialOwner) {}
 
-    function _baseURI() internal pure override returns (string memory) {
-        return "http://localhost/";
-    }
+    // function _baseURI() internal pure override returns (string memory) {
+    //     return "http://localhost/";
+    // }
 
     // Mapping from token ID to locked status
     mapping(uint256 => bool) _locked;
@@ -37,19 +37,34 @@ contract Certification is ERC721, ERC721Burnable, ERC721Enumerable, Ownable {
         return _locked[tokenId];
     }
 
-    function safeMint(address to, uint256 tokenId) public onlyOwner {
+    function mint(address to, uint256 tokenId) public onlyOwner {
         require(balanceOf(to) == 0, "MNT01");
         require(_locked[tokenId] != true, "MNT02");
 
         _locked[tokenId] = true;
         emit Locked(tokenId);
 
-        _safeMint(to, tokenId);
+        _mint(to, tokenId, 1, "");
     }
 
-    function burn(uint256 tokenId) public override {
+    function mintBatch(address to, uint256[] memory tokenIds) public onlyOwner {
+        require(balanceOf(to) == 0, "MNT01");
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            require(_locked[tokenIds[i]] != true, "MNT02");
+            _locked[tokenIds[i]] = true;
+            emit Locked(tokenIds[i]);
+        }
+        _mintBatch(to, tokenIds, new uint256[](tokenIds.length), "");
+    }
+
+    function burn(adress owner, uint256 tokenId) public override {
         require(msg.sender == ownerOf(tokenId), "BRN01");
-        _burn(tokenId);
+        _burn(owner, tokenId, 1);
+    }
+
+    function burnBatch(address owner, uint256[] memory tokenIds) public override {
+        require(msg.sender == ownerOf(tokenIds[0]), "BRN01");
+        _burnBatch(owner, tokenIds, (new uint256[](tokenIds.length).fill(1)));
     }
 
     modifier IsTransferAllowed(uint256 tokenId) {
@@ -61,7 +76,7 @@ contract Certification is ERC721, ERC721Burnable, ERC721Enumerable, Ownable {
         address from,
         address to,
         uint256 tokenId
-    ) public virtual override(IERC721, ERC721) IsTransferAllowed(tokenId) {
+    ) public virtual override(IERC1155, ERC1155) IsTransferAllowed(tokenId) {
         super.safeTransferFrom(from, to, tokenId);
     }
 
@@ -70,7 +85,7 @@ contract Certification is ERC721, ERC721Burnable, ERC721Enumerable, Ownable {
         address to,
         uint256 tokenId,
         bytes memory data
-    ) public virtual override(IERC721, ERC721) IsTransferAllowed(tokenId) {
+    ) public virtual override(IERC1155, ERC1155) IsTransferAllowed(tokenId) {
         super.safeTransferFrom(from, to, tokenId, data);
     }
 
@@ -78,7 +93,7 @@ contract Certification is ERC721, ERC721Burnable, ERC721Enumerable, Ownable {
         address from,
         address to,
         uint256 tokenId
-    ) public virtual override(IERC721, ERC721) IsTransferAllowed(tokenId) {
+    ) public virtual override(IERC1155, ERC1155) IsTransferAllowed(tokenId) {
         super.safeTransferFrom(from, to, tokenId);
     }
 
@@ -87,14 +102,14 @@ contract Certification is ERC721, ERC721Burnable, ERC721Enumerable, Ownable {
         address to,
         uint256 tokenId,
         uint256 batchSize
-    ) internal override(ERC721, ERC721Enumerable) {
+    ) internal override(ERC1155) {
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 
     function supportsInterface(bytes4 _interfaceId)
         public
         view
-        override(ERC721, ERC721Enumerable)
+        override(ERC1155)
         returns (bool)
     {
         return _interfaceId == type(IERC5192).interfaceId || super.supportsInterface(_interfaceId);
