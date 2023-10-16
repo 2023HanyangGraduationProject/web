@@ -33,12 +33,17 @@ contract Ticket is ERC1155, Ownable, ERC1155Burnable {
     /// about them do throw.
     /// @param tokenId The identifier for an SBT.
     function locked(uint256 tokenId) external view returns (bool) {
-        require(ownerOf(tokenId) != address(0));
+        // require(_ownerOf(tokenId) != address(0));
+        require(msg.sender != address(0));
         return _locked[tokenId];
     }
 
+    function _ownerOf(uint256 tokenId) internal view returns (bool) {
+        return balanceOf(msg.sender, tokenId) != 0;
+    }
+
     function mint(address to, uint256 tokenId) public onlyOwner {
-        require(balanceOf(to) == 0, "MNT01");
+        require(balanceOf(to, tokenId) == 0, "MNT01");
         require(_locked[tokenId] != true, "MNT02");
 
         _locked[tokenId] = true;
@@ -48,8 +53,8 @@ contract Ticket is ERC1155, Ownable, ERC1155Burnable {
     }
 
     function mintBatch(address to, uint256[] memory tokenIds) public onlyOwner {
-        require(balanceOf(to) == 0, "MNT01");
         for (uint256 i = 0; i < tokenIds.length; i++) {
+            require(balanceOf(to, tokenIds[i]) == 0, "MNT01");
             require(_locked[tokenIds[i]] != true, "MNT02");
             _locked[tokenIds[i]] = true;
             emit Locked(tokenIds[i]);
@@ -57,54 +62,89 @@ contract Ticket is ERC1155, Ownable, ERC1155Burnable {
         _mintBatch(to, tokenIds, new uint256[](tokenIds.length), "");
     }
 
-    function burn(adress owner, uint256 tokenId) public override {
-        require(msg.sender == ownerOf(tokenId), "BRN01");
+    function burn(address owner, uint256 tokenId) public  {
+        // require(msg.sender == _ownerOf(tokenId), "BRN01");
+        // require(_ownerOf(tokenId), true);
+        require(balanceOf(owner, tokenId) != 0, "BRN01");
         _burn(owner, tokenId, 1);
     }
 
-    function burnBatch(address owner, uint256[] memory tokenIds) public override {
-        require(msg.sender == ownerOf(tokenIds[0]), "BRN01");
-        _burnBatch(owner, tokenIds, (new uint256[](tokenIds.length).fill(1)));
+    function burnBatch(address owner, uint256[] memory tokenIds) public  {
+        // require(msg.sender == _ownerOf(tokenIds[0]), "BRN01");
+        for(uint256 i = 0; i < tokenIds.length; i++) {
+            require(balanceOf(owner, tokenIds[i]) != 0, "BRN01");
+        }
+        uint256[] memory amounts = new uint256[](tokenIds.length);
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            amounts[i] = 1;
+        }
+        // _burnBatch(owner, tokenIds, (new uint256[tokenIds.length]).fill(1));
+        _burnBatch(owner, tokenIds, amounts);
     }
 
-    modifier IsTransferAllowed(uint256 tokenId) {
-        require(!_locked[tokenId]);
+    function _updateWithAcceptanceCheck(
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory values,
+        bytes memory data
+    ) internal virtual override(ERC1155) IsTransferAllowed(ids) {
+        super._updateWithAcceptanceCheck(from, to, ids, values, data);
+
+        // _update(from, to, ids, values);
+        // if (to != address(0)) {
+        //     address operator = _msgSender();
+        //     if (ids.length == 1) {
+        //         uint256 id = ids.unsafeMemoryAccess(0);
+        //         uint256 value = values.unsafeMemoryAccess(0);
+        //         _doSafeTransferAcceptanceCheck(operator, from, to, id, value, data);
+        //     } else {
+        //         _doSafeBatchTransferAcceptanceCheck(operator, from, to, ids, values, data);
+        //     }
+        // }
+    }
+
+    modifier IsTransferAllowed(uint256[] memory tokenIds) {
+        // require(!_locked[tokenId]);
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            require(!_locked[tokenIds[i]]);
+        }
         _;
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual override(IERC1155, ERC1155) IsTransferAllowed(tokenId) {
-        super.safeTransferFrom(from, to, tokenId);
-    }
+    // function safeTransferFrom(
+    //     address from,
+    //     address to,
+    //     uint256 tokenId
+    // ) public virtual override(IERC1155, ERC1155) IsTransferAllowed(tokenId) {
+    //     super.safeTransferFrom(from, to, tokenId);
+    // }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) public virtual override(IERC1155, ERC1155) IsTransferAllowed(tokenId) {
-        super.safeTransferFrom(from, to, tokenId, data);
-    }
+    // function safeTransferFrom(
+    //     address from,
+    //     address to,
+    //     uint256 tokenId,
+    //     bytes memory data
+    // ) public virtual override(IERC1155, ERC1155) IsTransferAllowed(tokenId) {
+    //     super.safeTransferFrom(from, to, tokenId, data);
+    // }
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual override(IERC1155, ERC1155) IsTransferAllowed(tokenId) {
-        super.safeTransferFrom(from, to, tokenId);
-    }
+    // function transferFrom(
+    //     address from,
+    //     address to,
+    //     uint256 tokenId
+    // ) public virtual override(IERC1155, ERC1155) IsTransferAllowed(tokenId) {
+    //     super.safeTransferFrom(from, to, tokenId);
+    // }
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId,
-        uint256 batchSize
-    ) internal override(ERC1155) {
-        super._beforeTokenTransfer(from, to, tokenId, batchSize);
-    }
+    // function _beforeTokenTransfer(
+    //     address from,
+    //     address to,
+    //     uint256 tokenId,
+    //     uint256 batchSize
+    // ) internal override(ERC1155) {
+    //     super._beforeTokenTransfer(from, to, tokenId, batchSize);
+    // }
 
     function supportsInterface(bytes4 _interfaceId)
         public
