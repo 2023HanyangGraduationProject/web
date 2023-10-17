@@ -1,3 +1,4 @@
+import { put } from '@vercel/blob';
 import { createProduct } from '../../../lib/product/product.service'
 
 // export function GET(request) {
@@ -12,6 +13,14 @@ export async function POST(request) {
   // console.log(formData)
   const address = formData.get('address')
   const files = formData.getAll('images')
+  const blobs = []
+  for(let i = 0; i < files.length; i++) {
+    const blob = await put(new Date().toString().substring(10, 33)+i+"."+(files[i].name.split('.').at(-1)),  files[i],{
+      access: 'public',
+    })
+    blobs.push(blob)
+  }
+  // console.log(blobs)
   const row = formData.get('row')
   const column = formData.get('column')
   const price1 = formData.get('price1')
@@ -29,6 +38,6 @@ export async function POST(request) {
 
   return new Response("success", {
     status: 200,
-    body: JSON.stringify({ price1: price1, price2: price2, price3: price3, row: row, column: column }),
+    // body: JSON.stringify({ file: blobs, price1: price1, price2: price2, price3: price3, row: row, column: column }),
   })
 }
