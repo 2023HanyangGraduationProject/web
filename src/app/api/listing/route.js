@@ -33,7 +33,6 @@ export async function POST(request) {
   const currency3 = formData.get('currency3')
   
   try {
-    // TODO 여러개 분산해서 저장하는 부분
     let id = await createCollection({ seller: address, name: name, row: row, col: column, price1: price1, currency1: currency1, price2: price2, currency2: currency2, price3: price3, currency3: currency3 })
     for(let i = 0; i < blobs.length; i++) {
       await createProduct({ collection_id: id, img: blobs[i].url })
