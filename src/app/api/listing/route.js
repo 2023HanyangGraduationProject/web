@@ -32,6 +32,19 @@ export async function POST(request) {
   const price3 = formData.get('price3')
   const currency3 = formData.get('currency3')
   
+  // check whether the number of files is equal to the number of rows * columns
+  if(blobs.length != Number(row) * Number(column)){
+    return new Response("The number of files is not equal to the number of rows * columns", {
+      status: 400,
+    })
+  }
+  // check whether the string address is undefined or not.
+  if(address == "undefined"){
+    return new Response("Please connect your wallet", {
+      status: 400,
+    })
+  }
+  
   try {
     let id = await createCollection({ seller: address, name: name, row: row, col: column, price1: price1, currency1: currency1, price2: price2, currency2: currency2, price3: price3, currency3: currency3 })
     for(let i = 0; i < blobs.length; i++) {

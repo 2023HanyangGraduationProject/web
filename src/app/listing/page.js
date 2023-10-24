@@ -25,6 +25,11 @@ export default function Page() {
             alert("The number of files is not equal to the number of rows * columns");
             return;
         }
+        // check whether address is undefined or not.
+        if(address == undefined){
+            alert("Please connect your wallet");
+            return;
+        }
 
         let formData = new FormData();
         formData.append("address", address);
