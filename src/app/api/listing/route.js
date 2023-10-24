@@ -1,4 +1,5 @@
 import { put } from '@vercel/blob';
+import { createCollection } from '../../../lib/collection/collection.service'
 import { createProduct } from '../../../lib/product/product.service'
 
 // export function GET(request) {
@@ -12,6 +13,7 @@ export async function POST(request) {
   const formData = await request.formData();
   // console.log(formData)
   const address = formData.get('address')
+  const name = formData.get('name')
   const files = formData.getAll('images')
   const blobs = []
   for(let i = 0; i < files.length; i++) {
@@ -31,7 +33,11 @@ export async function POST(request) {
   const currency3 = formData.get('currency3')
   
   try {
-    await createProduct({ seller: address, row: row, col: column, price1: price1, currency1: currency1, price2: price2, currency2: currency2, price3: price3, currency3: currency3 })
+    // TODO 여러개 분산해서 저장하는 부분
+    let id = await createCollection({ seller: address, name: name, row: row, col: column, price1: price1, currency1: currency1, price2: price2, currency2: currency2, price3: price3, currency3: currency3 })
+    for(let i = 0; i < blobs.length; i++) {
+      await createProduct({ collection_id: id, img: blobs[i].url })
+    }
   } catch (e) {
     console.error(e.message);
   }
