@@ -17,10 +17,11 @@ export default function Page() {
     async function onSubmit(event) {
         event.preventDefault()
 
-        // check wheter the number of files is equal to the number of rows * columns
         let varFiles = event.target.inputFiles.files;
         let row = event.target.row.value;
         let column = event.target.column.value;
+        
+        // check wheter the number of files is equal to the number of rows * columns
         if(varFiles.length != row * column){
             alert("The number of files is not equal to the number of rows * columns");
             return;
@@ -34,13 +35,10 @@ export default function Page() {
         let formData = new FormData();
         formData.append("address", address);
         formData.append("name", event.target.collectionName.value);
-        // let varFiles = event.target.inputFiles.files;
         for(let i = 0; i < varFiles.length; i++){
             formData.append("images", varFiles[i]);
         }
-        // formData.append("row", event.target.row.value);
         formData.append("row", row);
-        // formData.append("column", event.target.column.value);
         formData.append("column", column);
         formData.append("price1", event.target.price1.value);
         formData.append("price2", event.target.price2.value);
@@ -74,7 +72,6 @@ export default function Page() {
                 <label for="inputFiles">이미지: </label>
                 <input id="inputFiles" multiple type="file" />
                 <pre class="output">Selected files:</pre>
-                {/* <label for="name">가격1: </label> */}
                 <label for="price1" class="block text-gray-700 text-sm font-bold mb-2">가격1: </label>
                 <input type="number" name="price1" id="price1" class="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required />
 
