@@ -38,6 +38,9 @@
   --callout-border-rgb: 172, 175, 176;
   --card-rgb: 180, 185, 188;
   --card-border-rgb: 131, 134, 135;
+
+  /* '스크롤바'가 항상 공간 차지하도록 설정 */
+  overflow-y: scroll;
 }
 
 @media (prefers-color-scheme: dark) {
