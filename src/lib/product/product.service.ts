@@ -8,3 +8,8 @@ export async function createProduct(params: InsertableProductRow) {
     const result = await db.insertInto('product').values({collection_id: params.collection_id, img: params.img}).executeTakeFirst()
     return result
 }
+
+export async function getProductsByCollectionId(id: number) { 
+    const result = await db.selectFrom('product').selectAll().where('collection_id','=',id).execute()
+    return result
+}
