@@ -9,7 +9,7 @@ const NavBar = () => {
       label: "등록",
     },
     {
-      href: "/items",
+      href: "/collections",
       label: "구매",
     },
     {
