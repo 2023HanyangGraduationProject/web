@@ -13,3 +13,8 @@ export async function getProductsByCollectionId(id: number) {
     const result = await db.selectFrom('product').selectAll().where('collection_id','=',id).execute()
     return result
 }
+
+export async function getProductById(id: number) {
+    const result = await db.selectFrom('product').selectAll().where('id','=',id).execute()
+    return result
+}
