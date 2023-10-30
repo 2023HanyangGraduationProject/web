@@ -1,6 +1,7 @@
 const collections = document.getElementById('collections')
 
 // fetch collections from database by rest api and make a list
+// TODO localhost 교체
 fetch('http://localhost:3000/api/collections', {method: 'GET'})
   .then(res => res.json())
   .then((res) => {
