@@ -1,5 +1,7 @@
 import { getProductById } from '../../../lib/product/product.service'
 import { storeNFT } from '../../../lib/nftStorage';
+import { mint } from '../../../lib/mint';
+// import module from "node-module";
 
 export async function POST(request) {
 
@@ -17,4 +19,6 @@ export async function POST(request) {
     const image = r.blob()
 
     const metadataUrl = await storeNFT(image)
+    console.log("metadata Url: " + metadataUrl)
+    mint(metadataUrl.url)
 }
