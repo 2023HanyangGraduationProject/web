@@ -15,4 +15,42 @@ fetch('http://localhost:3000/api/items/'+itemId, {method: 'GET'})
       )).join('')
     item.innerHTML = list
   })
+  .then(async () => {
+    await buyItem()
+    // const button = document.querySelector('button')
+    // button.addEventListener('click', () => {
+    //   try {     
+    //     const response = await fetch('http://localhost:3000/api/booking'+itemId, {
+    //       method: 'post',
+    //       body: {
+    //         // TODO 변경 필요
+    //         address: '0x1234',
+    //         productId: itemId,
+    //       }
+    //     });
+    //     console.log('Completed!', response);
+    //   } catch(err) {
+    //     console.error(`Error: ${err}`);
+    //   }
+    // })
+  })
   .catch(error => console.error(error))
+
+async function buyItem() {
+  const button = document.querySelector('button')
+  button.addEventListener('click', async () => {
+    try {     
+      const response = await fetch('http://localhost:3000/api/booking', {
+        method: 'post',
+        body: {
+          // TODO 변경 필요
+          address: '0x1234',
+          productId: itemId,
+        }
+      });
+      console.log('Completed!', response);
+    } catch(err) {
+      console.error(`Error: ${err}`);
+    }
+  })
+}
