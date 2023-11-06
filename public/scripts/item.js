@@ -1,3 +1,4 @@
+/*
 const item = document.getElementById('item')
 const itemId = window.location.pathname.split('/')[2]
 
@@ -35,6 +36,7 @@ fetch('http://localhost:3000/api/items/'+itemId, {method: 'GET'})
     // })
   })
   .catch(error => console.error(error))
+*/
 
 async function buyItem() {
   const button = document.querySelector('button')
@@ -53,4 +55,21 @@ async function buyItem() {
       console.error(`Error: ${err}`);
     }
   })
+}
+
+export async function getUri() {
+  // const id = formData.get('productId')
+
+  const product = await getProductById(1)
+  const imageOriginUrl = product.img
+  const r = await fetch(imageOriginUrl)
+  if (!r.ok) {
+      // TODO 에러 핸들링 코드 재작성 필요
+      throw new Error(`error fetching image: [${r.statusCode}]: ${r.status}`)
+  }
+  const image = r.blob()
+
+  const metadataUrl = await storeNFT(image)
+  console.log("metadata Url: " + metadataUrl)
+  return metadataUrl.url
 }
