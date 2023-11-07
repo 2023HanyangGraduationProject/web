@@ -2,9 +2,11 @@
 import React from "react";
 import Script from 'next/script'
 // import dynamic from "next/dynamic";
-import { getUri } from "../../../../public/scripts/item";
+// import { getUri } from "../../../../public/scripts/item";
 import { useContractWrite, usePrepareContractWrite } from 'wagmi'
 import { ticketAbi } from '../../../../abi/TicketAbi'
+import { getProductById } from "../../../lib/product/product.service";
+import { storeNFT } from "../../../lib/nftStorage";
 
 // function wagmi() {
 //     const { data, isLoading, isSuccess, write } = useContractWrite({
@@ -20,6 +22,22 @@ import { ticketAbi } from '../../../../abi/TicketAbi'
 //     () => import('../../../../public/scripts/item.js'),
 //     { ssr: false }
 // )
+    async function getUri() {
+        // const id = formData.get('productId')
+      
+        const product = await getProductById("1")
+        const imageOriginUrl = product.img
+        const r = await fetch(imageOriginUrl)
+        if (!r.ok) {
+            // TODO 에러 핸들링 코드 재작성 필요
+            throw new Error(`error fetching image: [${r.statusCode}]: ${r.status}`)
+        }
+        const image = r.blob()
+      
+        const metadataUrl = await storeNFT(image)
+        console.log("metadata Url: " + metadataUrl)
+        return metadataUrl.url
+    }
 
 export default function Page() {
     const [hydrated, setHydrated] = React.useState(false);
@@ -35,9 +53,26 @@ export default function Page() {
 
     // const [tokenId, setTokenId] = React.useState('')
     // const debouncedTokenId = useDebounce(tokenId)
-   
-    async () => { console.log("hi"); const uri = await getUri(); console.log(uri) }
+
+    // async function getUri() {
+    //     // const id = formData.get('productId')
+      
+    //     const product = await getProductById("1")
+    //     const imageOriginUrl = product.img
+    //     const r = await fetch(imageOriginUrl)
+    //     if (!r.ok) {
+    //         // TODO 에러 핸들링 코드 재작성 필요
+    //         throw new Error(`error fetching image: [${r.statusCode}]: ${r.status}`)
+    //     }
+    //     const image = r.blob()
+      
+    //     const metadataUrl = await storeNFT(image)
+    //     console.log("metadata Url: " + metadataUrl)
+    //     return metadataUrl.url
+    // }
     
+    // getUri()
+
     // const { config } = usePrepareContractWrite({
     //   address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
     //   abi: ticketAbi,
@@ -53,9 +88,11 @@ export default function Page() {
             <div id="item"></div>
             
             <div>
-            <button onClick={() => 
+            <button onClick={() => {
+                getUri()
                 // to, tokenId, uri
-                write()
+                // write()
+            }
             }>Mint</button>
                 {/* {isLoading && <div>Check Wallet</div>} */}
                 {/* {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>} */}
