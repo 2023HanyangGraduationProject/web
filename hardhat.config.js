@@ -1,7 +1,7 @@
 // "@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
 // "@nomicfoundation/hardhat-network-helpers": "^1.0.7",
-// "@nomicfoundation/hardhat-toolbox": "^2.0.0",
-// "@nomiclabs/hardhat-ethers": "^2.2.1",
+require("@nomicfoundation/hardhat-toolbox");
+require("@nomiclabs/hardhat-ethers");
 // "@nomiclabs/hardhat-etherscan": "^3.1.4",
 // require("@nomiclabs/hardhat-waffle");
 
@@ -17,13 +17,13 @@ require ("dotenv").config();
 const { API_URL, PRIVATE_KEY } = process.env;
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  defaultNetwork: "hardhat",
+  defaultNetwork: "sepolia",
   networks: {
     hardhat: {
     },
     sepolia: {
       url: API_URL,
-      accounts: PRIVATE_KEY
+      accounts: [`${PRIVATE_KEY}`]
     }
   },
   solidity: {
