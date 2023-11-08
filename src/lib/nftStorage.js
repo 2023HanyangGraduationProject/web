@@ -37,8 +37,10 @@ export async function getUri() {
 export async function storeNFT(img) {
   // const image = await getExampleImage()
   const image = img
+  console.log("*****"+image.type)
+  // console.log(image)
   const nft = {
-    image, // use image Blob as `image` field
+    image: image, // use image Blob as `image` field
     name: "ticket series",
     description: "These are the Soulbound Token based Tickets.",
     properties: {

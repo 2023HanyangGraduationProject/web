@@ -20,6 +20,7 @@ const nextConfig = {
         {
             // matching all API routes
             source: "/api/:path*",
+            // source: "*",
             headers: [
                 { key: "Access-Control-Allow-Credentials", value: "true" },
                 { key: "Access-Control-Allow-Origin", value: "https://rpc.sepolia.org" }, // replace this your actual origin

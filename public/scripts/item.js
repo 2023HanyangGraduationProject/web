@@ -61,7 +61,7 @@ export async function getUri() {
   // const id = formData.get('productId')
 
   const product = await getProductById(1)
-  const imageOriginUrl = product.img
+  const imageOriginUrl = product[0].img
   const r = await fetch(imageOriginUrl)
   if (!r.ok) {
       // TODO 에러 핸들링 코드 재작성 필요
