@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IERC5192.sol";
 
 contract Ticket is ERC1155, Ownable, ERC1155Burnable {
+    // constructor(string memory uri) ERC1155(uri) {}
     constructor(address initialOwner) ERC1155("") Ownable(initialOwner) {}
 
 
@@ -39,17 +40,21 @@ contract Ticket is ERC1155, Ownable, ERC1155Burnable {
         return balanceOf(msg.sender, tokenId) != 0;
     }
 
-    function mint(address to, uint256 tokenId) public onlyOwner {
+    function mint(address to, uint256 tokenId, string memory uri) public onlyOwner {
+    // function mint (address to, uint256 tokenId, string memory uri) public {
         require(balanceOf(to, tokenId) == 0, "MNT01");
         require(_locked[tokenId] != true, "MNT02");
 
         _locked[tokenId] = true;
         emit Locked(tokenId);
 
+        _setURI(uri);
+
         _mint(to, tokenId, 1, "");
     }
 
     function mintBatch(address to, uint256[] memory tokenIds) public onlyOwner {
+    // function mintBatch(address to, uint256[] memory tokenIds) public {
         for (uint256 i = 0; i < tokenIds.length; i++) {
             require(balanceOf(to, tokenIds[i]) == 0, "MNT01");
             require(_locked[tokenIds[i]] != true, "MNT02");
