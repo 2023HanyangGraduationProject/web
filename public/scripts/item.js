@@ -1,3 +1,6 @@
+// TODO 확인 후 파일 삭제
+
+/*
 const item = document.getElementById('item')
 const itemId = window.location.pathname.split('/')[2]
 
@@ -15,4 +18,64 @@ fetch('http://localhost:3000/api/items/'+itemId, {method: 'GET'})
       )).join('')
     item.innerHTML = list
   })
+  .then(async () => {
+    await buyItem()
+    // const button = document.querySelector('button')
+    // button.addEventListener('click', () => {
+    //   try {     
+    //     const response = await fetch('http://localhost:3000/api/booking'+itemId, {
+    //       method: 'post',
+    //       body: {
+    //         // TODO 변경 필요
+    //         address: '0x1234',
+    //         productId: itemId,
+    //       }
+    //     });
+    //     console.log('Completed!', response);
+    //   } catch(err) {
+    //     console.error(`Error: ${err}`);
+    //   }
+    // })
+  })
   .catch(error => console.error(error))
+*/
+
+// 현재 미사용
+// TODO 확인 후 함수 삭제
+async function buyItem() {
+  const button = document.querySelector('button')
+  button.addEventListener('click', async () => {
+    try {     
+      const response = await fetch('http://localhost:3000/api/booking', {
+        method: 'post',
+        body: {
+          // TODO 변경 필요
+          address: '0x1234',
+          productId: itemId,
+        }
+      });
+      console.log('Completed!', response);
+    } catch(err) {
+      console.error(`Error: ${err}`);
+    }
+  })
+}
+
+// 현재 미사용
+// TODO 확인 후 함수 삭제
+export async function getUri() {
+  // const id = formData.get('productId')
+
+  const product = await getProductById(1)
+  const imageOriginUrl = product[0].img
+  const r = await fetch(imageOriginUrl)
+  if (!r.ok) {
+      // TODO 에러 핸들링 코드 재작성 필요
+      throw new Error(`error fetching image: [${r.statusCode}]: ${r.status}`)
+  }
+  const image = r.blob()
+
+  const metadataUrl = await storeNFT(image)
+  console.log("metadata Url: " + metadataUrl)
+  return metadataUrl.url
+}
