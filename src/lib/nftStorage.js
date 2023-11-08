@@ -1,5 +1,6 @@
 import { get } from 'http'
 import { NFTStorage } from 'nft.storage'
+import { getProductById } from './product/product.service'
 
 // read the API key from an environment variable. You'll need to set this before running the example!
 const API_KEY = process.env.NFT_STORAGE_API_KEY
@@ -16,11 +17,30 @@ const client = new NFTStorage({ token: API_KEY })
 //   return r.blob()
 // }
 
+export async function getUri() {
+  // const id = formData.get('productId')
+  
+  const product = await getProductById(1)
+  const imageOriginUrl = product.img
+  const r = await fetch(imageOriginUrl)
+  if (!r.ok) {
+      // TODO 에러 핸들링 코드 재작성 필요
+      throw new Error(`error fetching image: [${r.statusCode}]: ${r.status}`)
+  }
+  const image = r.blob()
+  
+  const metadataUrl = await storeNFT(image)
+  console.log("metadata Url: " + metadataUrl)
+  return metadataUrl.url
+}
+
 export async function storeNFT(img) {
   // const image = await getExampleImage()
   const image = img
+  // console.log("*****"+image.type)
+  // console.log(image)
   const nft = {
-    image, // use image Blob as `image` field
+    image: image, // use image Blob as `image` field
     name: "ticket series",
     description: "These are the Soulbound Token based Tickets.",
     properties: {
