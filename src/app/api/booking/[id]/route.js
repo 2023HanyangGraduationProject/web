@@ -18,19 +18,23 @@ export async function POST(request) {
     // const r = await fetch("https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Portrait_of_the_Yongzheng_Emperor_in_Court_Dress.jpg/100px-Portrait_of_the_Yongzheng_Emperor_in_Court_Dress.jpg", myInit).then(res => res.blob())
     const r = await fetch(imageOriginUrl).then(res => res.blob())
     // const r = await fetch(imageOriginUrl)
-    console.log(r)
+    // console.log(r)
     // if (!r.ok) {
     //     // TODO 에러 핸들링 코드 재작성 필요
     //     throw new Error(`error fetching image: [${r.statusCode}]: ${r.status}`)
     // }
     // console.log(r.blob())
-    console.log("***"+r.type)
+    // console.log("***"+r.type)
     // const image = r.blob()
     // console.log(image.type)
     
     // const metadataUrl = await storeNFT(image);
     const metadataUrl = await storeNFT(r);
-    // console.log("metadata Url: " + metadataUrl)
+    // console.log("metadata Url: " + metadataUrl.url)
     // return metadataUrl.url
-    return "hi"
+    return new Response(JSON.stringify({url: metadataUrl.url}), {
+      headers: {
+        "content-type": "application/json",
+      },
+    });
 }

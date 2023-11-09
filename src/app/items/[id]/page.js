@@ -1,15 +1,28 @@
 'use client'
 import React from "react";
 import Script from 'next/script'
-// import dynamic from "next/dynamic";
 // import { getUri } from "../../../../public/scripts/item";
-// import { useContractWrite, usePrepareContractWrite } from 'wagmi'
+import { useContractWrite, usePrepareContractWrite } from 'wagmi'
 import { ticketAbi } from '../../../../abi/TicketAbi'
-// import { getProductById } from "../../../lib/product/product.service";
 // import { storeNFT } from "../../../lib/nftStorage";
-// import SignClient from '@walletconnect/sign-client';
+import SignClient from '@walletconnect/sign-client';
 // import { getUri } from "../../../lib/nftStorage";
 
+async function getUri() {
+    const response = await fetch('http://localhost:3000/api/booking/1', {
+        // headers: {
+            // 'Content-Type': 'multipart/form-data',
+        // },
+        method: 'POST',
+        // body: formData,
+    })
+    // response.json().url
+    let data = await response.json()
+    // console.log("*****a"+data.url)
+    console.log(data)
+    return data
+    // return res.url
+}
 
 // function wagmi() {
 //     const { data, isLoading, isSuccess, write } = useContractWrite({
@@ -19,28 +32,6 @@ import { ticketAbi } from '../../../../abi/TicketAbi'
 //         args: ["0xF695135B90667c2cd3F96e35115c2df589cEA1BA", 1]
 //         // args: ["0xF695135B90667c2cd3F96e35115c2df589cEA1BA", 1, await getUri()]
 //     })
-// }
-
-// const DynamicComponentWithNoSSR = dynamic(
-//     () => import('../../../../public/scripts/item.js'),
-//     { ssr: false }
-// )
-
-// async function getUri() {
-//     // const id = formData.get('productId')
-    
-//     const product = await getProductById(1)
-//     const imageOriginUrl = product.img
-//     const r = await fetch(imageOriginUrl)
-//     if (!r.ok) {
-//         // TODO 에러 핸들링 코드 재작성 필요
-//         throw new Error(`error fetching image: [${r.statusCode}]: ${r.status}`)
-//     }
-//     const image = r.blob()
-    
-//     const metadataUrl = await storeNFT(image)
-//     console.log("metadata Url: " + metadataUrl)
-//     return metadataUrl.url
 // }
 
 // const signClient = new SignClient({
@@ -86,15 +77,6 @@ import { ticketAbi } from '../../../../abi/TicketAbi'
 //     }
 // };
 
-async function mint() {
-    const response = await fetch('/api/booking/1', {
-        // headers: {
-            // 'Content-Type': 'multipart/form-data',
-        // },
-        method: 'POST',
-        // body: formData,
-    })
-}
 
 export default function Page() {
     const [hydrated, setHydrated] = React.useState(false);
@@ -106,13 +88,26 @@ export default function Page() {
         return null;
     }
 
+    const uri = getUri()
+
+    // TODO debound(useEffect hook과 유사) 적용 https://wagmi.sh/examples/contract-write-dynamic#step-5-add-a-debounce-to-the-input-value
+    const { contractWriteConfig } = usePrepareContractWrite({
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        abi: ticketAbi,
+        functionName: "mint",
+        args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, uri],
+    });
+
+    const { data, isSuccess, isLoading } = useContractWrite(contractWriteConfig);
+
     return (
         <>
             <h1>Hello, Item Page!</h1>
             <div id="item"></div>
             
             <div>
-                <button onClick={ mint() }>
+                <button >
+                {/* <button onClick={ mint() }> */}
                 {/* // <button onClick={async () => {
                     // const uri = await getUri();
                     // await signTransaction();
