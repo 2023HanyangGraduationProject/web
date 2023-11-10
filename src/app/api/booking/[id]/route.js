@@ -32,9 +32,18 @@ export async function POST(request) {
     const metadataUrl = await storeNFT(r);
     // console.log("metadata Url: " + metadataUrl.url)
     // return metadataUrl.url
-    return new Response(JSON.stringify({url: metadataUrl.url}), {
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+    
+
+    // return response with the json metadata url and set type json and set status 200
+    return new Response(
+        JSON.stringify({
+            url: metadataUrl,
+        }),
+        {
+            headers: {
+                "content-type": "application/json; charset=UTF-8",
+            },
+            status: 200,
+        }
+    )
 }
