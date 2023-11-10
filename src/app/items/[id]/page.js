@@ -73,7 +73,14 @@ export default function Page() {
     const [hydrated, setHydrated] = React.useState(false);
     
     // Use a state variable to store the uri
-    const [uri, setUri] = React.useState(getUri());
+    const [uri, setUri] = React.useState('');
+    const [debouncedUri] = useDebounce(uri, 500);
+
+    // const [setUseContractWriteConfig, settingUseContractWriteConfig ] = React.useState(false);
+    // const [debouncedUseContractWriteConfig] = useDebounce(useContractWriteConfig, 500);
+
+    // const [ticketAbi] = React.useState('');
+    // const [debouncedTicketAbi] = useDebounce(ticketAbi, 500);
 
     React.useEffect(() => {
         setHydrated(true);
@@ -84,35 +91,44 @@ export default function Page() {
     }
 
     // TODO debounce (https://wagmi.sh/examples/contract-write-dynamic#step-5-add-a-debounce-to-the-input-value)
-    const uri2 = getUri()
+    // const uri2 = getUri()
 
-    // const { useContractWriteConfig } = usePrepareContractWrite({
-    //     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-    //     abi: ticketAbi,
-    //     functionName: "mint",
-    //     args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, uri],
-    // });
+    // React.useEffect(() => {
+    //     if(setUseContractWriteConfig) {
+    //         settingUseContractWriteConfig(true);
+    //         const { useContractWriteConfig } = usePrepareContractWrite({
+    //             address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+    //             abi: ticketAbi,
+    //             functionName: "mint",
+    //             args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, debouncedUri],
+    //         });
+    //     }
+    // }, [] );
     
     // const { data, isLoading, isSuccess, write } = useContractWrite({
-    //     useContractWriteConfig
+    // //     useContractWriteConfig
+    // address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+    //             abi: ticketAbi,
+    //             functionName: "mint",
+    //             args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, debouncedUri],
     // })
 
     /*
         const [mintDebounced, setMintDebounced] = useDebounce(mint, 500);
 
     const uri = getUri();
-
-    const { useContractWriteConfig } = usePrepareContractWrite({
-        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-        abi: ticketAbi,
-        functionName: "mint",
-        args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, uri],
-    });
-
-    const { data, isLoading, isSuccess, write } = useContractWrite({
-        useContractWriteConfig,
-    });
     */
+    // const { useContractWriteConfig } = usePrepareContractWrite({
+    //     address: "0x9B05f5a661c38802a629EBC98A0D226299E4d09f",
+    //     // address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+    //     abi: ticketAbi,
+    //     functionName: 'mint',
+    //     // args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, debouncedUri],
+    // });
+
+    // const { data, isLoading, isSuccess, write } = useContractWrite({
+    //     useContractWriteConfig,
+    // });
 
    // // Use a state variable to store the uri
    // const [uri] = React.useState(getUri());
@@ -125,7 +141,7 @@ export default function Page() {
     
     // TODO hook은 loop 내부에서 사용 불가 
     // Use the useDebounce hook to debounce the uri value
- //    const debouncedUri = useDebounce(uri, 500);
+    // const debouncedUri = useDebounce(getUri(), 500);
 
     // const { useContractWriteConfig } = usePrepareContractWrite({
     //     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
@@ -142,7 +158,6 @@ export default function Page() {
         <>
             <h1>Hello, Item Page!</h1>
             <div id="item"></div>
-            
             <div>
                 {/* { isLoading && <input type="text" value="Loading..." /> } */}
                 {/* { isSuccess && <input type="text" value={JSON.stringify(data)} /> } */}
@@ -163,4 +178,15 @@ export default function Page() {
             {/* <DynamicComponentWithNoSSR /> */}
         </>
     )
+
+    const { useContractWriteConfig } = usePrepareContractWrite({
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        abi: ticketAbi,
+        functionName: 'mint',
+        args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, debouncedUri],
+    });
+
+    const { data, isLoading, isSuccess, write } = useContractWrite({
+        useContractWriteConfig,
+    });
 }
