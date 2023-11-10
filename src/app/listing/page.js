@@ -67,46 +67,46 @@ export default function Page() {
             
             <form className="w-2/3 min-w-720 max-w-7xl min-h-96 max-h-screen  bg-white shadow-md rounded px-8 pt-6 pb-8 mx-auto mb-4 "onSubmit={onSubmit}>
                 <label for="collectionName">콜렉션 이름: </label>
-                <input type="text" name="collectionName" id="collectionName" class="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required />
+                <input type="text" name="collectionName" id="collectionName" className="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required />
                 <br />
                 <label for="inputFiles">이미지: </label>
                 <input id="inputFiles" multiple type="file" />
-                <pre class="output">Selected files:</pre>
-                <label for="price1" class="block text-gray-700 text-sm font-bold mb-2">가격1: </label>
-                <input type="number" name="price1" id="price1" class="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required />
+                <pre className="output">Selected files:</pre>
+                <label for="price1" className="block text-gray-700 text-sm font-bold mb-2">가격1: </label>
+                <input type="number" name="price1" id="price1" className="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required />
 
-                <select name="currency1" class="border rounded ml-4 h-8">
+                <select name="currency1" className="border rounded ml-4 h-8">
                     <option value="0">ETH(ETHEREUM)</option>
                     <option value="1">ETH(SEPOLIA)</option>
                     <option value="2">MATIC(POLYGON)</option>
                     <option value="3">MATIC(MUMBAI)</option>
                 </select>
                 <br />
-                <label for="price2" class="block text-gray-700 text-sm font-bold mb-2">가격2: </label>
-                <input type="number" name="price2" id="price2" class="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required />
+                <label for="price2" className="block text-gray-700 text-sm font-bold mb-2">가격2: </label>
+                <input type="number" name="price2" id="price2" className="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required />
                 
-                <select name="currency2" class="border rounded ml-4 h-8">
+                <select name="currency2" className="border rounded ml-4 h-8">
                     <option value="0">ETH(ETHEREUM)</option>
                     <option value="1">ETH(SEPOLIA)</option>
                     <option value="2">MATIC(POLYGON)</option>
                     <option value="3">MATIC(MUMBAI)</option>
                 </select>
                 <br />
-                <label for="price3" class="block text-gray-700 text-sm font-bold mb-2">가격3: </label>
-                <input type="number" name="price3" id="price3" class="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required />
+                <label for="price3" className="block text-gray-700 text-sm font-bold mb-2">가격3: </label>
+                <input type="number" name="price3" id="price3" className="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required />
                 
-                <select name="currency3" class="border rounded ml-4 h-8">
+                <select name="currency3" className="border rounded ml-4 h-8">
                     <option value="0">ETH(ETHEREUM)</option>
                     <option value="1">ETH(SEPOLIA)</option>
                     <option value="2">MATIC(POLYGON)</option>
                     <option value="3">MATIC(MUMBAI)</option>
                 </select>
                 <br />
-                행: <input type="number" name="row" class="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"/>
+                행: <input type="number" name="row" className="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"/>
                 <br />
-                열: <input type="number" name="column" class="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"/>
+                열: <input type="number" name="column" className="shadow appearance-none border rounded w-48 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"/>
                 <br />
-                <button type="submit"class="bg-blue-500 hover:bg-blue-700 text-white font-bold w-36 h-12 py-2 px-4 rounded focus:outline-none focus:shadow-outline">등록</button>
+                <button type="submit"className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-36 h-12 py-2 px-4 rounded focus:outline-none focus:shadow-outline">등록</button>
             </form>
             <Script src="/scripts/listing.js" strategy="afterInteractive"/>
         </>
