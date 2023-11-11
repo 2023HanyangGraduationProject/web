@@ -7,9 +7,9 @@ fetch('http://localhost:3000/api/collections/'+collectionId, {method: 'GET'})
   .then(res => res.json())
   .then((res) => {
     const list = res.map((ele) => (
-      `<div key="${ele.id}" width="300" height="300">
-        <img src="${ele.img}" "width="200" height="200" />
-        <a href="/items/${ele.id}" className="text-blue-500 hover:text-blue-700">상세 페이지</a>
+      `<div id="${ele.id}" style="width:300px; height:300px; color: lightgray; border-radius: 0.25rem;" >
+        <img src="${ele.img}" style="width:200px; height:200px; border: solid" />
+        <a href="/items/${ele.id}" style="color: blue;" className="text-blue-500 hover:text-blue-700">상세 페이지</a>
       </div>`
     )).join('')
     items.innerHTML = list
