@@ -13,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}><Providers>
+      <body className={inter.className} style={{minHeight: 100 + "vh"}}><Providers>
         <div className="flex justify-center pt-4">
           <NavBar />
         </div>
