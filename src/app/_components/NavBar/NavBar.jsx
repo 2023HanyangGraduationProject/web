@@ -19,9 +19,9 @@ const NavBar = () => {
   ];
 
   return (
-    <div className="container flex flex-row justify-between items-center w-4/5 h-14 bg-red-100"> 
-        <div className="w-10">로고</div>
-        <nav className="px-12 h-14 bg-black flex justify-between items-center rounded-2xl">
+    <div className="container flex flex-row justify-between items-center w-4/5 h-16 mt-6 "> 
+        <img src="/img/SoulTicket.png" className="w-80" />
+        <nav className="px-12 w-3/5 h-16 bg-black flex justify-between items-center rounded-3xl">
             {links.map((link) => (
                 <div key={link.href} className="w-48 m-4">
                 {/* <Link href={link.href}> */}
