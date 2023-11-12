@@ -2,7 +2,7 @@
 import React from "react";
 import Script from 'next/script'
 import { useAccount, useConnect } from 'wagmi'
-import { useContractWrite, usePrepareContractWrite } from 'wagmi'
+import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
 import { ticketAbi } from '../../../../abi/TicketAbi'
 // import { storeNFT } from "../../../lib/nftStorage";
 // import SignClient from '@walletconnect/sign-client';
@@ -13,62 +13,11 @@ async function getUri() {
         method: 'POST',
     })
     let data = await response.json()
-    // console.log(data)
+    console.log("dat:" + data)
+    // console.log("data:" + data.url)
+    // TODO 프로미스 어떻게 리턴하는지 확인
     return data
 }
-
-// function wagmi() {
-//     const { data, isLoading, isSuccess, write } = useContractWrite({
-//         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-//         abi: ticketAbi,
-//         functionName: 'mint',
-//         args: ["0xF695135B90667c2cd3F96e35115c2df589cEA1BA", 1]
-//         // args: ["0xF695135B90667c2cd3F96e35115c2df589cEA1BA", 1, await getUri()]
-//     })
-// }
-
-// const signClient = new SignClient({
-//     projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
-//     // relayUrl: 'relay.walletconnect.com'
-// });
-// const connect = async () => {
-//     try {
-//         // console.log('Try Connecting to WalletConnect:', session);
-//         const session = await signClient.connect();
-//         console.log('Connected to WalletConnect:', session);
-//     } catch (error) {
-//         console.error('Failed to connect to WalletConnect:', error);
-//     }
-// };
-// const { data, isSuccess, isLoading } = usePrepareContractWrite({
-//     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-//     abi: ticketAbi,
-//     functionName: "mint",
-//     args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, await getUri()],
-// });
-// const signTransaction = async () => {
-//     if (!isSuccess || isLoading) {
-//         return;
-//     }
-
-//     try {
-//         const signedTransaction = await signClient.signTransaction(data.transaction);
-//         console.log('Signed transaction:', signedTransaction);
-
-//         // Send signed transaction to the blockchain
-//         const sendTransaction = async () => {
-//             try {
-//                 const receipt = await web3.eth.sendSignedTransaction(signedTransaction);
-//                 console.log('Transaction receipt:', receipt);
-//             } catch (error) {
-//                 console.error('Failed to send transaction:', error);
-//             }
-//         };
-//         sendTransaction();
-//     } catch (error) {
-//         console.error('Failed to sign transaction:', error);
-//     }
-// };
 
 export default function Page() {
 
@@ -78,14 +27,12 @@ export default function Page() {
     const [hydrated, setHydrated] = React.useState(false);
     
     // Use a state variable to store the uri
-    const [uri, setUri] = React.useState('');
-    const [debouncedUri] = useDebounce(uri, 500);
-
-    // const [setUseContractWriteConfig, settingUseContractWriteConfig ] = React.useState(false);
-    // const [debouncedUseContractWriteConfig] = useDebounce(setUseContractWriteConfig, 500);
-
-    // const [ticketAbi] = React.useState('');
-    // const [debouncedTicketAbi] = useDebounce(ticketAbi, 500);
+    const [uri, setUri] = React.useState(getUri().then((result) => {return result.url}));
+    // const [debouncedUri] = useDebounce(uri, 500);
+    console.log("uri: " + uri)
+    // console.log("debounceduri: " + debouncedUri)
+    console.log("address: " + address)
+    console.log("addr: " + process.env.NEXT_PUBLIC_CONTRACT_ADDRESS)
     
     React.useEffect(() => {
         console.log(
@@ -94,16 +41,29 @@ export default function Page() {
       }, [isConnected]);
 
     const { useContractWriteConfig } = usePrepareContractWrite({
-        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        // address: "0xF695135B90667c2cd3F96e35115c2df589cEA1BA",
+        address: "0x9B05f5a661c38802a629EBC98A0D226299E4d09f",
+        // address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
         abi: ticketAbi,
         functionName: 'mint',
-        // args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, debouncedUri],
-        args: [address, 1, debouncedUri],
+        gas: 1_000_000n,
+        args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 3, "ipfs://bafyreihvuf3xonmtrmyqcvyf7elnzzsbhsymzk2h2lqbwjhqwikbaokdvm/metadata.json"],
+        // args: ["0x4D264781d14bdc4194cF7eE272866Fd016446fb1", 1, "ipfs://bafyreihvuf3xonmtrmyqcvyf7elnzzsbhsymzk2h2lqbwjhqwikbaokdvm/metadata.json"],
+        // args: [address, 1, debouncedUri],
     });
 
-    const { data, isLoading, isSuccess, write } = useContractWrite({
+    const { data, write } = useContractWrite({
         useContractWriteConfig,
+        // address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        // abi: ticketAbi,
+        // functionName: 'mint',
     });
+    console.log(address)
+    // console.log(data)
+
+    const { isLoading, isSuccess } = useWaitForTransaction({
+        hash: data?.hash,
+      })
 
     React.useEffect(() => {
         setHydrated(true);
@@ -112,32 +72,6 @@ export default function Page() {
         // Returns null on first render, so the client and server match
         return null;
     }
-
-
-    // TODO debounce (https://wagmi.sh/examples/contract-write-dynamic#step-5-add-a-debounce-to-the-input-value)
-    // const uri2 = getUri()
-
-
-    /*
-        const [mintDebounced, setMintDebounced] = useDebounce(mint, 500);
-
-    const uri = getUri();
-    */
-    // const { useContractWriteConfig } = usePrepareContractWrite({
-    //     address: "0x9B05f5a661c38802a629EBC98A0D226299E4d09f",
-    //     // address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-    //     abi: ticketAbi,
-    //     functionName: 'mint',
-    //     // args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, debouncedUri],
-    // });
-
-    // const { data, isLoading, isSuccess, write } = useContractWrite({
-    //     useContractWriteConfig,
-    // });
-
-   // // Use a state variable to store the uri
-   // const [uri] = React.useState(getUri());
-   
    
    // Update the uri state when the input value changes
    const handleChange = (event) => {
@@ -151,41 +85,25 @@ export default function Page() {
             <div>
                 { isLoading && <input type="text" value="Loading..." /> }
                 { isSuccess && <input type="text" value={JSON.stringify(data)} /> }
-                {/* <input type="text" value={uri} onChange={handleChange} /> */}
-                {/* <button > */}
-                {/* <button onClick={ mint() }> */}
-                <button onClick={
-                    async () => {
-                        if (!isSuccess || isLoading) {
-                            return;
-                        }
-
-                        try {
-                            const signedTransaction = await signClient.signTransaction(data.transaction);
-                            console.log('Signed transaction:', signedTransaction);
-
-                            // Send signed transaction to the blockchain
-                            const sendTransaction = async () => {
-                                try {
-                                    const receipt = await web3.eth.sendSignedTransaction(signedTransaction);
-                                    console.log('Transaction receipt:', receipt);
-                                } catch (error) {
-                                    console.error('Failed to send transaction:', error);
-                                }
-                            };
-                            sendTransaction();
-                        } catch (error) {
-                            console.error('Failed to sign transaction:', error);
-                        }
-                }}>
                 
-                Mint</button>
-                {/* {isLoading && <div>Check Wallet</div>} */}
-                {/* {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>} */}
+                <button disabled={!write || isLoading} onClick={() => write({
+                    address: "0x9B05f5a661c38802a629EBC98A0D226299E4d09f",
+                    abi: ticketAbi,
+                    gas: 1_000_000n,
+                    functionName: 'mint',
+                    args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 3, "ipfs://bafyreihvuf3xonmtrmyqcvyf7elnzzsbhsymzk2h2lqbwjhqwikbaokdvm/metadata.json"],
+                })?.()}>
+                    {isLoading ? 'Minting...' : 'Mint'}
+                </button>
+                {isSuccess && (
+                    <div>
+                        Successfully minted your NFT!
+                        <div>
+                            <a href={`https://etherscan.io/tx/${data?.hash}`}>Etherscan</a>
+                        </div>
+                    </div>
+                )}
             </div>
-    
-            {/* <Script src="/scripts/item.js" strategy="afterInteractive" /> */}
-            {/* <DynamicComponentWithNoSSR /> */}
         </>
     )
 }

@@ -10,7 +10,7 @@ import "./interfaces/IERC5192.sol";
 contract Ticket is ERC1155, Ownable, ERC1155Burnable {
     // constructor(string memory uri) ERC1155(uri) {}
     constructor(address initialOwner) ERC1155("") Ownable(initialOwner) {}
-
+    // TODO _seturi 살펴보기, mint가 아니라 생성자로 티켓에 컨트랙트를 하나씩 만들어야 할 거 같음.
 
     // Mapping from token ID to locked status
     mapping(uint256 => bool) _locked;
