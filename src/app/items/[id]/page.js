@@ -1,6 +1,7 @@
 'use client'
 import React from "react";
 import Script from 'next/script'
+import { useAccount, useConnect } from 'wagmi'
 import { useContractWrite, usePrepareContractWrite } from 'wagmi'
 import { ticketAbi } from '../../../../abi/TicketAbi'
 // import { storeNFT } from "../../../lib/nftStorage";
@@ -70,6 +71,10 @@ async function getUri() {
 // };
 
 export default function Page() {
+
+    const { connect, connectors } = useConnect();
+    const { address, connector, isConnected } = useAccount()
+    
     const [hydrated, setHydrated] = React.useState(false);
     
     // Use a state variable to store the uri
@@ -77,10 +82,28 @@ export default function Page() {
     const [debouncedUri] = useDebounce(uri, 500);
 
     // const [setUseContractWriteConfig, settingUseContractWriteConfig ] = React.useState(false);
-    // const [debouncedUseContractWriteConfig] = useDebounce(useContractWriteConfig, 500);
+    // const [debouncedUseContractWriteConfig] = useDebounce(setUseContractWriteConfig, 500);
 
     // const [ticketAbi] = React.useState('');
     // const [debouncedTicketAbi] = useDebounce(ticketAbi, 500);
+    
+    React.useEffect(() => {
+        console.log(
+          `Current connection status: ${isConnected ? "connected" : "disconnected"}`
+        );
+      }, [isConnected]);
+
+    const { useContractWriteConfig } = usePrepareContractWrite({
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        abi: ticketAbi,
+        functionName: 'mint',
+        // args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, debouncedUri],
+        args: [address, 1, debouncedUri],
+    });
+
+    const { data, isLoading, isSuccess, write } = useContractWrite({
+        useContractWriteConfig,
+    });
 
     React.useEffect(() => {
         setHydrated(true);
@@ -90,28 +113,10 @@ export default function Page() {
         return null;
     }
 
+
     // TODO debounce (https://wagmi.sh/examples/contract-write-dynamic#step-5-add-a-debounce-to-the-input-value)
     // const uri2 = getUri()
 
-    // React.useEffect(() => {
-    //     if(setUseContractWriteConfig) {
-    //         settingUseContractWriteConfig(true);
-    //         const { useContractWriteConfig } = usePrepareContractWrite({
-    //             address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-    //             abi: ticketAbi,
-    //             functionName: "mint",
-    //             args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, debouncedUri],
-    //         });
-    //     }
-    // }, [] );
-    
-    // const { data, isLoading, isSuccess, write } = useContractWrite({
-    // //     useContractWriteConfig
-    // address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-    //             abi: ticketAbi,
-    //             functionName: "mint",
-    //             args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, debouncedUri],
-    // })
 
     /*
         const [mintDebounced, setMintDebounced] = useDebounce(mint, 500);
@@ -138,36 +143,41 @@ export default function Page() {
    const handleChange = (event) => {
        setUri(event.target.value);
     };
-    
-    // TODO hook은 loop 내부에서 사용 불가 
-    // Use the useDebounce hook to debounce the uri value
-    // const debouncedUri = useDebounce(getUri(), 500);
-
-    // const { useContractWriteConfig } = usePrepareContractWrite({
-    //     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-    //     abi: ticketAbi,
-    //     functionName: "mint",
-    //     args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, "debouncedUri"],
-    // });
-
-    // const { data, isLoading, isSuccess, write } = useContractWrite({
-    //     useContractWriteConfig
-    // })
 
     return (
         <>
             <h1>Hello, Item Page!</h1>
             <div id="item"></div>
             <div>
-                {/* { isLoading && <input type="text" value="Loading..." /> } */}
-                {/* { isSuccess && <input type="text" value={JSON.stringify(data)} /> } */}
+                { isLoading && <input type="text" value="Loading..." /> }
+                { isSuccess && <input type="text" value={JSON.stringify(data)} /> }
                 {/* <input type="text" value={uri} onChange={handleChange} /> */}
-                <button >
+                {/* <button > */}
                 {/* <button onClick={ mint() }> */}
-                {/* // <button onClick={async () => {
-                    // const uri = await getUri();
-                    // await signTransaction();
-                }}> */}
+                <button onClick={
+                    async () => {
+                        if (!isSuccess || isLoading) {
+                            return;
+                        }
+
+                        try {
+                            const signedTransaction = await signClient.signTransaction(data.transaction);
+                            console.log('Signed transaction:', signedTransaction);
+
+                            // Send signed transaction to the blockchain
+                            const sendTransaction = async () => {
+                                try {
+                                    const receipt = await web3.eth.sendSignedTransaction(signedTransaction);
+                                    console.log('Transaction receipt:', receipt);
+                                } catch (error) {
+                                    console.error('Failed to send transaction:', error);
+                                }
+                            };
+                            sendTransaction();
+                        } catch (error) {
+                            console.error('Failed to sign transaction:', error);
+                        }
+                }}>
                 
                 Mint</button>
                 {/* {isLoading && <div>Check Wallet</div>} */}
@@ -178,15 +188,4 @@ export default function Page() {
             {/* <DynamicComponentWithNoSSR /> */}
         </>
     )
-
-    const { useContractWriteConfig } = usePrepareContractWrite({
-        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-        abi: ticketAbi,
-        functionName: 'mint',
-        args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 1, debouncedUri],
-    });
-
-    const { data, isLoading, isSuccess, write } = useContractWrite({
-        useContractWriteConfig,
-    });
 }
