@@ -3,7 +3,7 @@ const collectionId = window.location.pathname.split('/')[2]
 
 // fetch items belong to a collection from database by rest api and make a list
 // TODO localhost 교체
-fetch('http://localhost:3000/api/collections/'+collectionId, {method: 'GET'})
+fetch('http://localhost:3000/api/collections/'+collectionId, {method: 'GET'}, {Headers: {"Access-Control-Allow-Origin": "https://rpc.sepolia.org"}})
   .then(res => res.json())
   .then((res) => {
     const list = res.map((ele) => (
