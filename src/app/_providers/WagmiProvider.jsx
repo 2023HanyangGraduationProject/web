@@ -22,7 +22,7 @@ const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 const { publicClient, webSocketPublicClient } = configureChains(chains, [alchemyProvider({apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY})]);
 const wagmiConfig = createConfig({
   autoConnect: true,
-  // connectors: w3mConnectors({ projectId, version: 2, chains }),
+  connectors: w3mConnectors({ projectId, version: 2, chains }),
   publicClient,
   webSocketPublicClient,
 });

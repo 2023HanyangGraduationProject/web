@@ -9,6 +9,7 @@ const hre = require("hardhat");
 async function main() {
 
   const ticket = await hre.ethers.getContractFactory("Ticket");
+  // const ticketContract = await ticket.deploy();
   const ticketContract = await ticket.deploy(process.env.NEXT_PUBLIC_DEPLOYING_ADDRESS);
   const ticketContractDeployed = await ticketContract.deployed();
   console.log("Ticket deployed abi??:", ticketContractDeployed.interface);

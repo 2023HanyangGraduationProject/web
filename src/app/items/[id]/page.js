@@ -41,13 +41,13 @@ export default function Page() {
       }, [isConnected]);
 
     const { useContractWriteConfig } = usePrepareContractWrite({
-        // address: "0xF695135B90667c2cd3F96e35115c2df589cEA1BA",
-        address: "0x9B05f5a661c38802a629EBC98A0D226299E4d09f",
+        address: "0xb368cc6aD870345d4492DCfEe561CF419222ef2E",
         // address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
         abi: ticketAbi,
         functionName: 'mint',
         gas: 1_000_000n,
-        args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 3, "ipfs://bafyreihvuf3xonmtrmyqcvyf7elnzzsbhsymzk2h2lqbwjhqwikbaokdvm/metadata.json"],
+        args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 11],
+        // args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 3, "ipfs://bafyreihvuf3xonmtrmyqcvyf7elnzzsbhsymzk2h2lqbwjhqwikbaokdvm/metadata.json"],
         // args: ["0x4D264781d14bdc4194cF7eE272866Fd016446fb1", 1, "ipfs://bafyreihvuf3xonmtrmyqcvyf7elnzzsbhsymzk2h2lqbwjhqwikbaokdvm/metadata.json"],
         // args: [address, 1, debouncedUri],
     });
@@ -87,11 +87,12 @@ export default function Page() {
                 { isSuccess && <input type="text" value={JSON.stringify(data)} /> }
                 
                 <button disabled={!write || isLoading} onClick={() => write({
-                    address: "0x9B05f5a661c38802a629EBC98A0D226299E4d09f",
+                    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, // 0xb368cc6aD870345d4492DCfEe561CF419222ef2E
                     abi: ticketAbi,
                     gas: 1_000_000n,
                     functionName: 'mint',
-                    args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 3, "ipfs://bafyreihvuf3xonmtrmyqcvyf7elnzzsbhsymzk2h2lqbwjhqwikbaokdvm/metadata.json"],
+                    args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 12],
+                    // args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 3, "ipfs://bafyreihvuf3xonmtrmyqcvyf7elnzzsbhsymzk2h2lqbwjhqwikbaokdvm/metadata.json"],
                 })?.()}>
                     {isLoading ? 'Minting...' : 'Mint'}
                 </button>
