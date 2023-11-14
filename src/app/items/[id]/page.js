@@ -9,7 +9,7 @@ import { ticketAbi } from '../../../../abi/TicketAbi'
 import { useDebounce } from '../../../helpers/hooks/useDebounce'
 
 async function getUri() {
-    const response = await fetch('http://localhost:3000/api/booking/1', {
+    const response = await fetch(process.env.NEXT_PUBLIC_DOMAIN+'/api/booking/1', {
         method: 'POST',
     })
     let data = await response.json()
@@ -22,7 +22,7 @@ async function getUri() {
 export default function Page() {
 
     const { connect, connectors } = useConnect();
-    const { address, connector, isConnected } = useAccount()
+    const { address, isConnecting, isConnected } = useAccount()
     
     const [hydrated, setHydrated] = React.useState(false);
     
@@ -58,7 +58,7 @@ export default function Page() {
         // abi: ticketAbi,
         // functionName: 'mint',
     });
-    console.log(address)
+    console.log("****address: "+ address)
     // console.log(data)
 
     const { isLoading, isSuccess } = useWaitForTransaction({
@@ -80,31 +80,37 @@ export default function Page() {
 
     return (
         <>
-            <h1>Hello, Item Page!</h1>
-            <div id="item"></div>
-            <div>
-                { isLoading && <input type="text" value="Loading..." /> }
-                { isSuccess && <input type="text" value={JSON.stringify(data)} /> }
-                
-                <button disabled={!write || isLoading} onClick={() => write({
-                    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, // 0xb368cc6aD870345d4492DCfEe561CF419222ef2E
-                    abi: ticketAbi,
-                    gas: 1_000_000n,
-                    functionName: 'mint',
-                    args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 12],
-                    // args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 3, "ipfs://bafyreihvuf3xonmtrmyqcvyf7elnzzsbhsymzk2h2lqbwjhqwikbaokdvm/metadata.json"],
-                })?.()}>
-                    {isLoading ? 'Minting...' : 'Mint'}
-                </button>
-                {isSuccess && (
-                    <div>
-                        Successfully minted your NFT!
-                        <div>
-                            <a href={`https://etherscan.io/tx/${data?.hash}`}>Etherscan</a>
-                        </div>
+            <div className="w-2/3 min-w-720 max-w-7xl min-h-96 max-h-screen  bg-white shadow-md rounded p-20 mx-auto mt-20 mb-4">
+                <div className="p-10 bg-slate-300 rounded-3xl">
+                    <div id="item">
+                        <div className="w-[200px] h-[200px] bg-gray-100"></div>
                     </div>
-                )}
+                </div>
+                <div>
+                    { isLoading && <input type="text" value="Loading..." /> }
+                    { isSuccess && <input type="text" value={JSON.stringify(data)} /> }
+                    
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-36 h-12 py-2 px-4 my-2 rounded focus:outline-none focus:shadow-outline" disabled={!write || isLoading} onClick={() => write({
+                        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, // 0xb368cc6aD870345d4492DCfEe561CF419222ef2E
+                        abi: ticketAbi,
+                        gas: 1_000_000n,
+                        functionName: 'mint',
+                        args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, window.location.pathname.split('/')[2]],
+                        // args: [process.env.NEXT_PUBLIC_WALLET_ADDRESS, 3, "ipfs://bafyreihvuf3xonmtrmyqcvyf7elnzzsbhsymzk2h2lqbwjhqwikbaokdvm/metadata.json"],
+                    })?.()}>
+                        {isLoading ? 'Minting...' : 'Mint'}
+                    </button>
+                    {isSuccess && (
+                        <div>
+                            Successfully minted your NFT!
+                            <div>
+                                <a href={`https://etherscan.io/tx/${data?.hash}`}>Etherscan</a>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
+            <Script src="/scripts/item.js" strategy="afterInteractive"/>
         </>
     )
 }
