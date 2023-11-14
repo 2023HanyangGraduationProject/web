@@ -35,3 +35,16 @@ module.exports = {
   //   timeout: 40000
   // }
 }
+
+task('mint', 'Mint SBT')
+  .addParam('address', 'Address of deployed SBT')
+  .addParam('to', 'Address receiving SBT token')
+  .addParam('tokenId', 'ID of SBT token that is being minted')
+  .setAction(async (args, hre) => {
+    const sbt = await hre.ethers.getContractAt('Certification', args.address)
+    const [owner] = await hre.ethers.getSigners()
+    const tx = await (await sbt.safeMint(args.to, args.tokenId)).wait()
+    console.log(tx)
+    console.log(`SBT with tokenId ${args.tokenId} was minted for address ${args.to}`)
+  }
+)
