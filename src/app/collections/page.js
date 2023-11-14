@@ -14,8 +14,9 @@ export default function Page() {
 
     return (
         <>
-            <h1>Hello, Collections Page!</h1>
-            <div id="collections"></div>
+            <div id="collections" className="grid grid-cols-4 gap-4 bg-slate-300 rounded-xl m-20 p-10">
+                
+            </div>
             
             <Script src="/scripts/collections.js" strategy="afterInteractive"/>
         </>
