@@ -60,13 +60,13 @@ contract Ticket is ERC1155, IERC5192, Ownable {
         _mintBatch(to, tokenIds, new uint256[](tokenIds.length), "");
     }
 
-    modifier IsTransferAllowed(uint256 tokenId) {
-        require(!_locked[tokenId]);
-        _;
-    }
+    // modifier IsTransferAllowed(uint256 tokenId) {
+    //     require(!_locked[tokenId]);
+    //     _;
+    // }
 
-    function safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes memory data) public virtual override IsTransferAllowed(id) {
-        super.safeTransferFrom(from, to, id, value, data);
-    }
+    // function safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes memory data) public virtual override IsTransferAllowed(id) {
+    //     super.safeTransferFrom(from, to, id, value, data);
+    // }
 
 }
