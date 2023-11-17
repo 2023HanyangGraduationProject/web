@@ -7,7 +7,7 @@ import "./interfaces/IERC5192.sol";
 
 contract Ticket is ERC1155, IERC5192, Ownable {
     // constructor(string memory uri) ERC1155(uri) {}
-    constructor(address initialOwner) ERC1155("") Ownable(initialOwner) {}
+    constructor(address initialOwner) ERC1155("ipfs://bafyreihvuf3xonmtrmyqcvyf7elnzzsbhsymzk2h2lqbwjhqwikbaokdvm/metadata.json") Ownable(initialOwner) {}
 
     // Mapping from token ID to locked status
     mapping(uint256 => bool) _locked;
@@ -59,4 +59,14 @@ contract Ticket is ERC1155, IERC5192, Ownable {
         }
         _mintBatch(to, tokenIds, new uint256[](tokenIds.length), "");
     }
+
+    modifier IsTransferAllowed(uint256 tokenId) {
+        require(!_locked[tokenId]);
+        _;
+    }
+
+    function safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes memory data) public virtual override IsTransferAllowed(id) {
+        super.safeTransferFrom(from, to, id, value, data);
+    }
+
 }

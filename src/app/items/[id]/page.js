@@ -41,8 +41,8 @@ export default function Page() {
       }, [isConnected]);
 
     const { useContractWriteConfig } = usePrepareContractWrite({
-        address: "0xb368cc6aD870345d4492DCfEe561CF419222ef2E",
-        // address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        // address: "0x7d76d15B1137972EaDbB3aD3bfE96aB4e4E3BcB7",
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
         abi: ticketAbi,
         functionName: 'mint',
         gas: 1_000_000n,
@@ -91,7 +91,7 @@ export default function Page() {
                     { isSuccess && <input type="text" value={JSON.stringify(data)} /> }
                     
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-36 h-12 py-2 px-4 my-2 rounded focus:outline-none focus:shadow-outline" disabled={!write || isLoading} onClick={() => write({
-                        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, // 0xb368cc6aD870345d4492DCfEe561CF419222ef2E
+                        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, // 0x7d76d15B1137972EaDbB3aD3bfE96aB4e4E3BcB7
                         abi: ticketAbi,
                         gas: 1_000_000n,
                         functionName: 'mint',
